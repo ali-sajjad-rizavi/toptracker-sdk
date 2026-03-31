@@ -10,7 +10,11 @@ export interface RequestOptions {
   readonly accessToken?: string;
 }
 
-function buildUrl(path: string, params?: Record<string, string | string[]>, accessToken?: string): string {
+function buildUrl(
+  path: string,
+  params?: Record<string, string | string[]>,
+  accessToken?: string,
+): string {
   const url = new URL(path, BASE_URL);
 
   if (params) {
@@ -38,7 +42,7 @@ export async function request<T>(options: RequestOptions): Promise<T> {
   const url = buildUrl(path, params, accessToken);
 
   const headers: Record<string, string> = {
-    "Accept": "application/json",
+    Accept: "application/json",
   };
 
   if (body !== undefined) {
