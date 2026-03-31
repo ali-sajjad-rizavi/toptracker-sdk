@@ -1,0 +1,48 @@
+{
+  "name": "toptracker-sdk",
+  "version": "0.1.0",
+  "description": "Unofficial TypeScript SDK for the TopTracker API",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
+  },
+  "packageManager": "pnpm@10.23.0",
+  "keywords": [
+    "toptracker",
+    "toptal",
+    "time-tracking",
+    "api",
+    "sdk"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AliSajjadRizavi/toptracker-sdk",
+    "directory": "typescript"
+  },
+  "bugs": {
+    "url": "https://github.com/AliSajjadRizavi/toptracker-sdk/issues"
+  },
+  "homepage": "https://github.com/AliSajjadRizavi/toptracker-sdk/tree/main/typescript#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
