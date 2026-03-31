@@ -1,15 +1,57 @@
-Generate a billing/time report using the TopTracker API.
+Generate a billing/time report using the TopTracker TypeScript SDK.
 
 Instructions: $ARGUMENTS
 
 Steps:
-1. Authenticate with TopTracker API (ask user for credentials if needed)
-2. Fetch the project list via GET /web/projects to identify project IDs
-3. For each relevant project, fetch engagements via GET /projects/:id/engagements to get worker IDs
-4. Fetch detailed activities via GET /reports/activities with the date range
-5. Fetch timesheet summaries via GET /reports/timesheet for totals
+1. Authenticate: ask user for credentials if needed, then use the SDK to login:
+   ```ts
+   const { client } = await TopTrackerClient.login({ email, password });
+   ```
+   Or if the user provides an access_token directly:
+   ```ts
+   const client = new TopTrackerClient({ accessToken: token });
+   ```
+
+2. Fetch project list:
+   ```ts
+   const { projects } = await client.projects.list({ archived: false });
+   ```
+
+3. For each relevant project, fetch engagements to get worker IDs:
+   ```ts
+   const { workers, statistics } = await client.projects.engagements(projectId);
+   ```
+
+4. Fetch detailed activities for the date range:
+   ```ts
+   const { activities } = await client.reports.activities({
+     project_ids: [projectId],
+     worker_ids: workerIds,
+     start_date: "YYYY-MM-DD",
+     end_date: "YYYY-MM-DD",
+   });
+   ```
+
+5. Fetch timesheet summaries for totals:
+   ```ts
+   const { timesheet } = await client.reports.timesheet({
+     project_ids: [projectId],
+     worker_ids: workerIds,
+     start_date: "YYYY-MM-DD",
+     end_date: "YYYY-MM-DD",
+   });
+   ```
+
 6. Generate a formatted report with:
    - Per-worker breakdown: total hours, daily hours, activity descriptions
    - Per-project breakdown: total hours, cost (if rates available)
    - Grand totals
+
 7. Output the report in the format the user requested (markdown table, CSV, etc.)
+
+Implementation notes:
+- Write a temporary Node script (e.g. /tmp/tt-report.mjs) that imports from the built SDK at the repo's typescript/dist directory
+- Run it with: node /tmp/tt-report.mjs
+- The SDK must be built first: run `pnpm run build` in the typescript/ directory
+- Print results as JSON to stdout, then format them in your response
+- Clean up the temp script when done
