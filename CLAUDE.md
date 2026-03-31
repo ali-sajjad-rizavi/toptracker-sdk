@@ -5,6 +5,7 @@ Unofficial SDK for the TopTracker (by Toptal) internal API. This is a monorepo w
 ## Project Structure
 
 ```
+openapi.yaml   — OpenAPI 3.1 spec for all implemented endpoints (canonical API reference)
 typescript/    — TypeScript SDK (zero deps, native fetch)
 python/        — Python SDK (planned)
 ```

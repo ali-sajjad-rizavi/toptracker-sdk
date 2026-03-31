@@ -1,0 +1,593 @@
+openapi: 3.1.0
+info:
+  title: TopTracker API
+  description: |
+    Unofficial OpenAPI spec for the TopTracker (by Toptal) internal REST API.
+    Reverse-engineered from the web app's network traffic. This API is undocumented
+    and may change without notice.
+  version: 0.1.0
+  license:
+    name: MIT
+
+servers:
+  - url: https://tracker-api.toptal.com
+    description: Production
+
+security:
+  - accessToken: []
+
+paths:
+  /sessions:
+    post:
+      operationId: login
+      summary: Authenticate and obtain an access token
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                remember_me:
+                  type: boolean
+                  default: true
+      responses:
+        "201":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+
+  /users/me:
+    get:
+      operationId: getMe
+      summary: Get current authenticated user profile
+      tags: [Users]
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MeResponse"
+
+  /web/projects:
+    get:
+      operationId: listProjects
+      summary: List projects (active or archived)
+      tags: [Projects]
+      parameters:
+        - name: archived
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Project list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProjectsResponse"
+
+  /projects/{projectId}/engagements:
+    get:
+      operationId: getEngagements
+      summary: List workers and statistics for a project
+      tags: [Projects]
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Workers, invitations, and statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EngagementsResponse"
+
+  /reports/timesheet:
+    get:
+      operationId: getTimesheet
+      summary: Get time totals by project/worker/date range
+      tags: [Reports]
+      parameters:
+        - name: project_ids[]
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: worker_ids[]
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [projects, workers]
+            default: projects
+      responses:
+        "200":
+          description: Timesheet data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TimesheetResponse"
+
+  /reports/activities:
+    get:
+      operationId: getActivities
+      summary: Get detailed activity entries with descriptions
+      tags: [Reports]
+      parameters:
+        - name: project_ids[]
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: worker_ids[]
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: start_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Activity list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ActivitiesResponse"
+
+components:
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      in: query
+      name: access_token
+      description: Token obtained from POST /sessions
+
+  schemas:
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+        profiles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Profile"
+
+    MeResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        profiles:
+          type: array
+          items:
+            $ref: "#/components/schemas/Profile"
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        time_zone:
+          type: string
+        avatar_url:
+          type: string
+          nullable: true
+        company_name:
+          type: string
+        invoice_due_period:
+          type: integer
+        address:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          nullable: true
+        used_desktop:
+          type: boolean
+        has_invoices:
+          type: boolean
+        payment_request_summary:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+          nullable: true
+        last_name:
+          type: string
+        city:
+          type: string
+        country_id:
+          type: integer
+        email_verified_at:
+          type: string
+          format: date-time
+        email_verification_sent_at:
+          type: string
+          format: date-time
+
+    Profile:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [client, freelancer]
+        name:
+          type: string
+        avatar_url:
+          type: string
+          nullable: true
+        company_name:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        engagement_summary:
+          type: string
+        worker_view_group:
+          type: string
+        active:
+          type: boolean
+
+    ProjectsResponse:
+      type: object
+      properties:
+        projects:
+          type: array
+          items:
+            $ref: "#/components/schemas/Project"
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        archived_at:
+          type: string
+          format: date-time
+          nullable: true
+        abilities:
+          type: array
+          items:
+            type: string
+            enum: [invite, destroy, update, view_analytics, view_workers, view_worker_rates, view_worker_roles, grant_rights, add_mte, use_webtracker]
+        currency:
+          type: string
+        admin_id:
+          type: integer
+        last_activity_time:
+          type: string
+          format: date-time
+        current_user:
+          type: object
+          properties:
+            role:
+              type: string
+              enum: [admin, worker]
+            joined:
+              type: string
+              format: date-time
+            creator:
+              type: boolean
+        profiles_ids:
+          type: array
+          items:
+            type: integer
+        pending_invitation_ids:
+          type: array
+          items:
+            type: integer
+        is_admin_client:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        engagement_ids:
+          type: array
+          items:
+            type: integer
+        budget:
+          $ref: "#/components/schemas/ProjectBudget"
+        billable:
+          type: boolean
+        admin_profile:
+          $ref: "#/components/schemas/ProjectAdminProfile"
+        tracking_requirements:
+          type: object
+        invoicing_schedule:
+          $ref: "#/components/schemas/InvoicingSchedule"
+        stats:
+          type: object
+          properties:
+            number_of_workers:
+              type: integer
+        payment_vendor:
+          type: string
+          nullable: true
+
+    ProjectBudget:
+      type: object
+      properties:
+        amount:
+          type: string
+        limited:
+          type: boolean
+        rate_type:
+          type: string
+          enum: [individual, fixed]
+        used:
+          type: number
+
+    ProjectAdminProfile:
+      type: object
+      properties:
+        name:
+          type: string
+        avatar_url:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+        address:
+          type: string
+          nullable: true
+        id:
+          type: integer
+
+    InvoicingSchedule:
+      type: object
+      properties:
+        schedule_type:
+          type: string
+          enum: [manual, weekly, monthly]
+        period:
+          type: string
+          enum: [week, month]
+        day:
+          type: integer
+
+    EngagementsResponse:
+      type: object
+      properties:
+        invitations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invitation"
+        workers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Worker"
+        statistics:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkerStatistics"
+
+    Invitation:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        status:
+          type: string
+
+    Worker:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [freelancer, client]
+        name:
+          type: string
+        avatar_url:
+          type: string
+          nullable: true
+        company_name:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        engagement_summary:
+          type: string
+        worker_view_group:
+          type: string
+        role:
+          type: string
+          enum: [admin, worker]
+        email:
+          type: string
+        hireglobal_status:
+          type: string
+          nullable: true
+        rate:
+          type: string
+
+    WorkerStatistics:
+      type: object
+      properties:
+        worked_last_24_hours:
+          type: integer
+        worked_this_week:
+          type: integer
+        worked_this_month:
+          type: integer
+        worked_total:
+          type: integer
+        paid:
+          type: number
+        profile_id:
+          type: integer
+
+    TimesheetResponse:
+      type: object
+      properties:
+        timesheet:
+          type: object
+          properties:
+            projects:
+              type: array
+              items:
+                $ref: "#/components/schemas/TimesheetProject"
+
+    TimesheetProject:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        dates:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimesheetDateEntry"
+
+    TimesheetDateEntry:
+      type: object
+      properties:
+        date:
+          type: string
+        seconds:
+          type: integer
+        urlDate:
+          type: string
+          format: date
+
+    ActivitiesResponse:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+        total_shots:
+          type: integer
+        total_seconds:
+          type: integer
+
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+        end_time:
+          type: string
+          format: date-time
+        start_time:
+          type: string
+          format: date-time
+        seconds:
+          type: integer
+        project:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            currency:
+              type: string
+        worker:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        amount:
+          type: number
+          nullable: true
+        last_shot:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/ActivityShot"
+        shots_count:
+          type: integer
+
+    ActivityShot:
+      type: object
+      properties:
+        id:
+          type: integer
+        url:
+          type: string
+          format: uri
+        thumb_url:
+          type: string
+          format: uri

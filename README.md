@@ -13,6 +13,10 @@ TopTracker by Toptal is a free time-tracking tool for freelancers and teams. It 
 | TypeScript | [`typescript/`](./typescript) | `toptracker-sdk` (npm) |
 | Python | `python/` | Coming soon |
 
+## API Spec
+
+See [`openapi.yaml`](./openapi.yaml) for the full OpenAPI 3.1 specification of all implemented endpoints, including request/response schemas.
+
 ## API Coverage
 
 | Endpoint | Description |
