@@ -50,8 +50,7 @@ Steps:
 7. Output the report in the format the user requested (markdown table, CSV, etc.)
 
 Implementation notes:
-- Write a temporary Node script (e.g. /tmp/tt-report.mjs) that imports from the built SDK at the repo's typescript/dist directory
-- Run it with: node /tmp/tt-report.mjs
-- The SDK must be built first: run `pnpm run build` in the typescript/ directory
+- Write a temporary TypeScript script (e.g. /tmp/tt-report.ts) that imports from the SDK source at the repo's typescript/src directory
+- Run it with: pnpm tsx /tmp/tt-report.ts (from the typescript/ directory)
 - Print results as JSON to stdout, then format them in your response
 - Clean up the temp script when done

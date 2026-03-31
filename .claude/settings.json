@@ -24,6 +24,7 @@
       "Bash(gh issue:*)",
       "Bash(gh api:*)",
       "Bash(gh run:*)",
+      "Bash(pnpm tsx:*)",
       "Bash(npx prettier:*)",
       "Bash(npx husky:*)",
       "Bash(node:*)",
