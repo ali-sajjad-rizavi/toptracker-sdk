@@ -13,3 +13,6 @@ har-content.txt
 
 # For putting ignored files from git, to reference in a Claude Code session
 local-context/
+
+# Generated reports
+reports/
