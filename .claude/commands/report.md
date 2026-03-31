@@ -3,14 +3,18 @@ Generate a billing/time report using the TopTracker TypeScript SDK.
 Instructions: $ARGUMENTS
 
 Steps:
-1. Authenticate: ask user for credentials if needed, then use the SDK to login:
+1. Authenticate using environment variables (never ask the user for credentials in chat):
    ```ts
-   const { client } = await TopTrackerClient.login({ email, password });
+   // Option A: user has TOPTRACKER_TOKEN set
+   const client = new TopTrackerClient({ accessToken: process.env.TOPTRACKER_TOKEN! });
+
+   // Option B: user has TOPTRACKER_EMAIL + TOPTRACKER_PASSWORD set
+   const { client } = await TopTrackerClient.login({
+     email: process.env.TOPTRACKER_EMAIL!,
+     password: process.env.TOPTRACKER_PASSWORD!,
+   });
    ```
-   Or if the user provides an access_token directly:
-   ```ts
-   const client = new TopTrackerClient({ accessToken: token });
-   ```
+   If neither is set, tell the user to export the env vars — do NOT ask them to paste credentials.
 
 2. Fetch project list:
    ```ts
