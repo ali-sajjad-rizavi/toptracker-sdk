@@ -1,0 +1,1 @@
+cd typescript && pnpm run lint && pnpm run format:check

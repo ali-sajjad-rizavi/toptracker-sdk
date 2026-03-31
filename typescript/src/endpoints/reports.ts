@@ -6,7 +6,10 @@ import type {
   TimesheetResponse,
 } from "../types/index.js";
 
-function toArrayParams(key: string, ids: readonly number[]): Record<string, string[]> {
+function toArrayParams(
+  key: string,
+  ids: readonly number[],
+): Record<string, string[]> {
   return { [key]: ids.map(String) };
 }
 
@@ -26,7 +29,10 @@ export class ReportsEndpoint {
     };
 
     if (params.worker_ids) {
-      Object.assign(queryParams, toArrayParams("worker_ids[]", params.worker_ids));
+      Object.assign(
+        queryParams,
+        toArrayParams("worker_ids[]", params.worker_ids),
+      );
     }
 
     return request<TimesheetResponse>({
@@ -44,7 +50,10 @@ export class ReportsEndpoint {
     };
 
     if (params.worker_ids) {
-      Object.assign(queryParams, toArrayParams("worker_ids[]", params.worker_ids));
+      Object.assign(
+        queryParams,
+        toArrayParams("worker_ids[]", params.worker_ids),
+      );
     }
 
     return request<ActivitiesResponse>({

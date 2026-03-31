@@ -18,7 +18,9 @@ export class TopTrackerClient {
     this.reports = new ReportsEndpoint(options.accessToken);
   }
 
-  static async login(params: LoginParams): Promise<{ client: TopTrackerClient; response: LoginResponse }> {
+  static async login(
+    params: LoginParams,
+  ): Promise<{ client: TopTrackerClient; response: LoginResponse }> {
     const response = await AuthEndpoint.login(params);
     const client = new TopTrackerClient({ accessToken: response.access_token });
     return { client, response };

@@ -74,14 +74,20 @@ const { activities, total_seconds } = await client.reports.activities({
 });
 
 for (const activity of activities) {
-  console.log(`[${activity.worker.name}] ${activity.description} (${activity.seconds}s)`);
+  console.log(
+    `[${activity.worker.name}] ${activity.description} (${activity.seconds}s)`,
+  );
 }
 ```
 
 ### Error Handling
 
 ```typescript
-import { TopTrackerClient, AuthenticationError, TopTrackerError } from "toptracker-sdk";
+import {
+  TopTrackerClient,
+  AuthenticationError,
+  TopTrackerError,
+} from "toptracker-sdk";
 
 try {
   const { client } = await TopTrackerClient.login({
@@ -101,29 +107,29 @@ try {
 
 ### `TopTrackerClient`
 
-| Method | Description |
-|--------|-------------|
-| `TopTrackerClient.login(params)` | Authenticate and create a client |
+| Method                                  | Description                            |
+| --------------------------------------- | -------------------------------------- |
+| `TopTrackerClient.login(params)`        | Authenticate and create a client       |
 | `new TopTrackerClient({ accessToken })` | Create a client with an existing token |
 
 ### `client.auth`
 
-| Method | Returns |
-|--------|---------|
+| Method | Returns                                  |
+| ------ | ---------------------------------------- |
 | `me()` | `MeResponse` — current user and profiles |
 
 ### `client.projects`
 
-| Method | Returns |
-|--------|---------|
-| `list(params?)` | `ProjectsResponse` — all projects |
+| Method                   | Returns                                        |
+| ------------------------ | ---------------------------------------------- |
+| `list(params?)`          | `ProjectsResponse` — all projects              |
 | `engagements(projectId)` | `EngagementsResponse` — workers and statistics |
 
 ### `client.reports`
 
-| Method | Returns |
-|--------|---------|
-| `timesheet(params)` | `TimesheetResponse` — daily time totals |
+| Method               | Returns                                          |
+| -------------------- | ------------------------------------------------ |
+| `timesheet(params)`  | `TimesheetResponse` — daily time totals          |
 | `activities(params)` | `ActivitiesResponse` — detailed activity entries |
 
 ## License

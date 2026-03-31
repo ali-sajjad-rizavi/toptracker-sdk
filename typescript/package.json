@@ -19,6 +19,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "cd .. && husky typescript/.husky",
     "prepublishOnly": "pnpm run build"
   },
   "packageManager": "pnpm@10.23.0",
@@ -43,6 +46,8 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "prettier": "^3.8.1",
     "typescript": "^5.7.0"
   }
 }

@@ -29,7 +29,9 @@ export interface User {
 
 export type ProfileType = "client" | "freelancer";
 export type EngagementSummary = "legacy_only" | "active" | "none";
-export type WorkerViewGroup = "existing_without_hire_global" | "existing_with_hire_global";
+export type WorkerViewGroup =
+  | "existing_without_hire_global"
+  | "existing_with_hire_global";
 
 export interface Profile {
   readonly id: number;
