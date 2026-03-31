@@ -1,3 +1,4 @@
+.idea/
 node_modules/
 dist/
 *.tgz
@@ -9,3 +10,6 @@ __pycache__/
 .DS_Store
 *.log
 har-content.txt
+
+# For putting ignored files from git, to reference in a Claude Code session
+local-context/
