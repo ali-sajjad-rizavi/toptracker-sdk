@@ -31,7 +31,10 @@
       "Bash(mkdir:*)",
       "Bash(chmod:*)",
       "Bash(cat:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(curl:*)",
+      "Bash(TOKEN=:*)",
+      "Bash(python3 -m json.tool:*)"
     ],
     "deny": []
   }
